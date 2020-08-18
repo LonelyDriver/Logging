@@ -15,17 +15,17 @@ void console_logger_test(){
     logging->Info("This is a Info message1");
     logging->Warn("This is a warning message1");
     logging->Error("This is a error message1");
-    logging->LoggingLevel(logger::Loglevel::INFO);
+    logging->LoggingLevel(logger::Loglevel::L_INFO);
     logging->Debug("THis is a debug message2");
     logging->Info("This is a Info message2");
     logging->Warn("This is a warning message2");
     logging->Error("This is a error message2");
-    logging->LoggingLevel(logger::Loglevel::WARN);
+    logging->LoggingLevel(logger::Loglevel::L_WARN);
     logging->Debug("THis is a debug message3");
     logging->Info("This is a Info message3");
     logging->Warn("This is a warning message3");
     logging->Error("This is a error message3");
-    logging->LoggingLevel(logger::Loglevel::ERROR);
+    logging->LoggingLevel(logger::Loglevel::L_ERROR);
     logging->Debug("THis is a debug message4");
     logging->Info("This is a Info message4");
     logging->Warn("This is a warning message4");
@@ -38,17 +38,17 @@ void file_logger_test(){
     logging->Info("This is a Info message1");
     logging->Warn("This is a warning message1");
     logging->Error("This is a error message1");
-    logging->LoggingLevel(logger::Loglevel::INFO);
+    logging->LoggingLevel(logger::Loglevel::L_INFO);
     logging->Debug("THis is a debug message2");
     logging->Info("This is a Info message2");
     logging->Warn("This is a warning message2");
     logging->Error("This is a error message2");
-    logging->LoggingLevel(logger::Loglevel::WARN);
+    logging->LoggingLevel(logger::Loglevel::L_WARN);
     logging->Debug("THis is a debug message3");
     logging->Info("This is a Info message3");
     logging->Warn("This is a warning message3");
     logging->Error("This is a error message3");
-    logging->LoggingLevel(logger::Loglevel::ERROR);
+    logging->LoggingLevel(logger::Loglevel::L_ERROR);
     logging->Debug("THis is a debug message4");
     logging->Info("This is a Info message4");
     logging->Warn("This is a warning message4");
@@ -83,6 +83,6 @@ void thread_test(){
 
 int main(){
     console_logger_test();
-    //file_logger_test();
-    //thread_test();
+    file_logger_test();
+    thread_test();
 }

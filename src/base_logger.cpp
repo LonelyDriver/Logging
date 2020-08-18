@@ -8,21 +8,21 @@
 #include <cstdlib>
 
 logger::BaseLogger::BaseLogger() :
-m_loglevel(logger::Loglevel::ALL),
+m_loglevel(logger::Loglevel::L_ALL),
 m_mtx(){
     const char* env_p = std::getenv("LOG_LEVEL");
     if(env_p != nullptr){
         std::string env(env_p);
         if(env == "All"){
-            LoggingLevel(Loglevel::ALL);
+            LoggingLevel(Loglevel::L_ALL);
         }else if(env == "Debug"){
-            LoggingLevel(Loglevel::DEBUG);
+            LoggingLevel(Loglevel::L_DEBUG);
         }else if(env == "Info"){
-            LoggingLevel(Loglevel::INFO);
+            LoggingLevel(Loglevel::L_INFO);
         }else if(env == "Warn"){
-            LoggingLevel(Loglevel::WARN);
+            LoggingLevel(Loglevel::L_WARN);
         }else if(env == "Error"){
-            LoggingLevel(Loglevel::ERROR);
+            LoggingLevel(Loglevel::L_ERROR);
         }
     }
 
@@ -30,57 +30,57 @@ m_mtx(){
 
 void logger::BaseLogger::Info(const std::stringstream& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::INFO >= m_loglevel){
-        WriteToLog(FormatLogging(message.str(), logger::Loglevel::INFO));
+    if(logger::Loglevel::L_INFO >= m_loglevel){
+        WriteToLog(FormatLogging(message.str(), logger::Loglevel::L_INFO));
     }
 }
 
 void logger::BaseLogger::Debug(const std::stringstream& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::DEBUG >= m_loglevel){
-        WriteToLog(FormatLogging(message.str(), logger::Loglevel::DEBUG));
+    if(logger::Loglevel::L_DEBUG >= m_loglevel){
+        WriteToLog(FormatLogging(message.str(), logger::Loglevel::L_DEBUG));
     }
 }
 
 void logger::BaseLogger::Error(const std::stringstream& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::ERROR >= m_loglevel){
-        WriteToLog(FormatLogging(message.str(), logger::Loglevel::ERROR));
+    if(logger::Loglevel::L_ERROR >= m_loglevel){
+        WriteToLog(FormatLogging(message.str(), logger::Loglevel::L_ERROR));
     }
 }
 
 void logger::BaseLogger::Warn(const std::stringstream& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::WARN >= m_loglevel){
-        WriteToLog(FormatLogging(message.str(), logger::Loglevel::WARN));
+    if(logger::Loglevel::L_WARN >= m_loglevel){
+        WriteToLog(FormatLogging(message.str(), logger::Loglevel::L_WARN));
     }
 }
 
 void logger::BaseLogger::Info(const std::string& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::INFO >= m_loglevel){
-        WriteToLog(FormatLogging(message, logger::Loglevel::INFO));
+    if(logger::Loglevel::L_INFO >= m_loglevel){
+        WriteToLog(FormatLogging(message, logger::Loglevel::L_INFO));
     }
 }
 
 void logger::BaseLogger::Debug(const std::string& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::DEBUG >= m_loglevel){
-        WriteToLog(FormatLogging(message, logger::Loglevel::DEBUG));
+    if(logger::Loglevel::L_DEBUG >= m_loglevel){
+        WriteToLog(FormatLogging(message, logger::Loglevel::L_DEBUG));
     }
 }
 
 void logger::BaseLogger::Error(const std::string& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::ERROR >= m_loglevel){
-        WriteToLog(FormatLogging(message, logger::Loglevel::ERROR));
+    if(logger::Loglevel::L_ERROR >= m_loglevel){
+        WriteToLog(FormatLogging(message, logger::Loglevel::L_ERROR));
     }
 }
 
 void logger::BaseLogger::Warn(const std::string& message){
     std::unique_lock<std::mutex> lock(m_mtx);
-    if(logger::Loglevel::WARN >= m_loglevel){
-        WriteToLog(FormatLogging(message, logger::Loglevel::WARN));
+    if(logger::Loglevel::L_WARN >= m_loglevel){
+        WriteToLog(FormatLogging(message, logger::Loglevel::L_WARN));
     }
 }
 
@@ -92,7 +92,7 @@ std::string logger::BaseLogger::FormatLogging(const std::string& message, Loglev
     std::time_t t = s.count();
     
     std::stringstream ss{};
-    ss << "\033[90m"<< std::put_time(std::localtime(&t), "%F %T") << "." << ms_frac << " " << std::this_thread::get_id() << ConvertLevel(level)<< ":" << message << "\033[0m";
+    ss << std::put_time(std::localtime(&t), "%F %T") << "." << ms_frac << " " << std::this_thread::get_id() << ConvertLevel(level)<< ":" << message;
     return ss.str();
 }
 /*
@@ -103,21 +103,21 @@ void logger::BaseLogger::WriteToLog(const std::string& output){
 
 std::string logger::BaseLogger::ConvertLevel(Loglevel level){
     switch(level){
-        case Loglevel::DEBUG:
-            return " \033[35m[Debug]";
-        case Loglevel::INFO:
-            return " \033[36m[Info]";
-        case Loglevel::WARN:
-            return " \033[33m[Warn]";
-        case Loglevel::ERROR:
-            return " \033[31m[Error]";
+        case Loglevel::L_DEBUG:
+            return " [Debug]";
+        case Loglevel::L_INFO:
+            return " [Info]";
+        case Loglevel::L_WARN:
+            return " [Warn]";
+        case Loglevel::L_ERROR:
+            return " [Error]";
         default:
             return " [All]";
     }
 }
 
 void logger::BaseLogger::LoggingLevel(Loglevel level){
-    WriteToLog("\033[90mChanged Loglevel to "+ConvertLevel(level)+"\033[0m");
+    WriteToLog("Changed Loglevel to "+ConvertLevel(level));
     
     m_loglevel = level;
 }

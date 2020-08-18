@@ -5,7 +5,7 @@
 
 namespace logger
 {
-    enum class Loglevel{ALL=0, DEBUG=10, INFO=30, WARN=50, ERROR=70};
+    enum class Loglevel{L_ALL=0, L_DEBUG=10, L_INFO=30, L_WARN=50, L_ERROR=70};
     /**
      * @brief Base interface for logger
      * 
