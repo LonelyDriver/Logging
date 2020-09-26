@@ -7,9 +7,14 @@
 #include <thread>
 #include <cstdlib>
 
+logger::BaseLogger::BaseLogger(const std::string& id) : BaseLogger(){
+    m_id = id;
+}
+
 logger::BaseLogger::BaseLogger() :
 m_loglevel(logger::Loglevel::L_ALL),
-m_mtx(){
+m_mtx(),
+m_id(""){
     const char* env_p = std::getenv("LOG_LEVEL");
     if(env_p != nullptr){
         std::string env(env_p);
@@ -92,14 +97,9 @@ std::string logger::BaseLogger::FormatLogging(const std::string& message, Loglev
     std::time_t t = s.count();
     
     std::stringstream ss{};
-    ss << std::put_time(std::localtime(&t), "%F %T") << "." << ms_frac << " " << std::this_thread::get_id() << ConvertLevel(level)<< ":" << message;
+    ss << std::put_time(std::localtime(&t), "%F %T") << "." << ms_frac << " " << std::this_thread::get_id() << " " << m_id << ConvertLevel(level)<< ": " << message;
     return ss.str();
 }
-/*
-void logger::BaseLogger::WriteToLog(const std::string& output){
-    std::cout << output << std::endl;
-}
-*/
 
 std::string logger::BaseLogger::ConvertLevel(Loglevel level){
     switch(level){
@@ -117,6 +117,7 @@ std::string logger::BaseLogger::ConvertLevel(Loglevel level){
 }
 
 void logger::BaseLogger::LoggingLevel(Loglevel level){
+    std::unique_lock<std::mutex> lock(m_mtx);
     WriteToLog("Changed Loglevel to "+ConvertLevel(level));
     
     m_loglevel = level;
@@ -125,4 +126,11 @@ void logger::BaseLogger::LoggingLevel(Loglevel level){
 std::string logger::BaseLogger::LoggingLevel(){
     std::string ret = ConvertLevel(m_loglevel);
     return ret.substr(1,ret.size()-1);
+}
+
+void logger::BaseLogger::SetID(const std::string& id){
+    std::unique_lock<std::mutex> lock(m_mtx);
+    WriteToLog("Changed ID to "+id);
+
+    m_id = id;
 }

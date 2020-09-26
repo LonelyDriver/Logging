@@ -25,6 +25,7 @@ namespace logger
 
         virtual void LoggingLevel(Loglevel level) = 0;
         virtual std::string LoggingLevel() = 0;
+        virtual void SetID(const std::string& id) = 0;
     };
 } // namespace logger
 

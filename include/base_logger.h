@@ -8,6 +8,7 @@ namespace logger{
     class BaseLogger : public LoggerInterface{
     public:
         BaseLogger();
+        BaseLogger(const std::string& id);
         virtual ~BaseLogger() = default;
         void Info(const std::string& message) override;
         void Debug(const std::string& message) override;
@@ -21,6 +22,7 @@ namespace logger{
 
         void LoggingLevel(Loglevel level) override;
         std::string LoggingLevel() override;
+        void SetID(const std::string& id);
     protected:
         std::string FormatLogging(const std::string& message, Loglevel level);
         std::string ConvertLevel(Loglevel level);
@@ -28,6 +30,6 @@ namespace logger{
 
         Loglevel m_loglevel;
         std::mutex m_mtx;
-        std::stringstream m_stream;
+        std::string m_id;
     };
 }

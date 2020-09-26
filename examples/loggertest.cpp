@@ -1,6 +1,7 @@
 #include <console_logger.h>
 #include <file_logger.h>
 #include <thread>
+#include "logging_manager.h"
 /*
 void thread_test1(Logger logging){
     for(int i=0;i<50;++i){
@@ -63,6 +64,13 @@ void test(){
 void func(Logger logging){
     for(int i=0;i<100;++i){
         logging->Debug(STREAM("Hi from thread "<<std::this_thread::get_id()));
+        if(i % 2 == 0){
+            logging->Info(logging->LoggingLevel());
+            logging->LoggingLevel(logger::Loglevel::L_INFO);
+        }
+        if(i%3==0){
+            logging->LoggingLevel(logger::Loglevel::L_DEBUG);
+        }
     }
 }
 
@@ -81,8 +89,29 @@ void thread_test(){
     t1.join();
 }
 
+void logging_manager_example(){
+    LogManager::RegisterLogger("EXAMPLE-2", std::make_shared<logger::ConsoleLogger>());
+
+    Logger logging1 = LogManager::GetLogger("EXAMPLE-1");
+    Logger logging2 = LogManager::GetLogger("EXAMPLE-1");
+    Logger logging3 = LogManager::GetLogger("EXAMPLE-1");
+    Logger logging4 = LogManager::GetLogger("EXAMPLE-2");
+    Logger logging5 = LogManager::GetLogger("EXAMPLE-2");
+    std::thread t1(func, std::ref(logging1));
+    std::thread t2(func, std::ref(logging2));
+    std::thread t3(func, std::ref(logging3));
+    std::thread t4(func, std::ref(logging4));
+    std::thread t5(func, std::ref(logging5));
+
+    t5.join();
+    t4.join();
+    t3.join();
+    t2.join();
+    t1.join();
+}
 int main(){
     console_logger_test();
     file_logger_test();
     thread_test();
+    logging_manager_example();
 }
